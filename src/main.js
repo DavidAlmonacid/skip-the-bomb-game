@@ -18,14 +18,27 @@ import { emojis, maps } from './utils.js';
 
 // window.addEventListener('load', startGame);
 
-const grid = document.getElementById('grid-game');
+const app = document.getElementById('app');
+const gameGrid = document.getElementById('game-grid');
 
-for (let i = 0; i < maps.length; i++) {
-  for (let j = 0; j < maps[i].length; j++) {
-    const cell = document.createElement('div');
-    cell.classList.add('cell');
-    cell.innerText = emojis[maps[i][j]];
+app.addEventListener('click', () => {
+  gameGrid.style.userSelect = 'none';
+});
 
-    grid.appendChild(cell);
+gameGrid.addEventListener('selectstart', (event) => {
+  event.preventDefault();
+});
+
+const renderMap = (map) => {
+  for (let i = 0; i < map.length; i++) {
+    for (let j = 0; j < map[i].length; j++) {
+      const cell = document.createElement('div');
+      cell.classList.add('cell');
+      cell.innerText = emojis[map[i][j]];
+
+      gameGrid.appendChild(cell);
+    }
   }
-}
+};
+
+renderMap(maps.map1);

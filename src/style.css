@@ -48,7 +48,7 @@ body {
   background-color: #faedcd;
 } */
 
-#grid-game {
+#game-grid {
   display: grid;
   grid-template: repeat(10, var(--game-items-size)) / repeat(
       10,
@@ -62,7 +62,7 @@ body {
   user-select: none;
 }
 
-#grid-game .cell {
+#game-grid .cell {
   display: flex;
   justify-content: center;
   align-items: center;
