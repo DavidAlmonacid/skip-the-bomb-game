@@ -42,3 +42,27 @@ const renderMap = (map) => {
 };
 
 renderMap(maps.map1);
+
+window.addEventListener('keyup', (event) => {
+  event.preventDefault();
+
+  const userKey = event.key.toUpperCase();
+
+  const moveKeys = {
+    UP: ['W', 'ARROWUP'],
+    RIGHT: ['D', 'ARROWRIGHT'],
+    DOWN: ['S', 'ARROWDOWN'],
+    LEFT: ['A', 'ARROWLEFT']
+  };
+
+  for (const key in moveKeys) {
+    if (Object.hasOwn(moveKeys, key)) {
+      const element = moveKeys[key];
+
+      if (element.includes(userKey)) {
+        console.log(key);
+        break;
+      }
+    }
+  }
+});
