@@ -49,6 +49,7 @@ body {
 } */
 
 #game-grid {
+  position: relative;
   display: grid;
   grid-template: repeat(10, var(--game-items-size)) / repeat(
       10,
