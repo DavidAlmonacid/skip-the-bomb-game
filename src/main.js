@@ -1,22 +1,6 @@
+import { emojis, maps, movePlayer } from './utils.js';
+
 import './style.css';
-import { emojis, maps } from './utils.js';
-
-// const canvas = document.getElementById('game');
-// const game = canvas.getContext('2d');
-
-// const startGame = () => {
-//   const elementsSize = canvas.width / 10;
-
-//   game.font = `${elementsSize - 8}px Arial`;
-
-//   for (let i = 0; i < 10; i++) {
-//     game.fillText(emojis.X, elementsSize * i - 5, elementsSize);
-
-//     game.fillText(emojis.X, -5, elementsSize * (i + 1) - 12);
-//   }
-// };
-
-// window.addEventListener('load', startGame);
 
 const app = document.getElementById('app');
 const gameGrid = document.getElementById('game-grid');
@@ -35,10 +19,22 @@ gameGrid.addEventListener('selectstart', (event) => {
   event.preventDefault();
 });
 
+const doorPosition = {
+  X: 0,
+  Y: 0
+};
+
 const playerPosition = {
   X: 0,
   Y: 0
 };
+
+const giftPosition = {
+  X: 0,
+  Y: 0
+};
+
+const bombPositions = [];
 
 const renderMap = (map) => {
   for (let i = 0; i < map.length; i++) {
@@ -46,14 +42,18 @@ const renderMap = (map) => {
       const currentChar = map[i][j];
 
       const cell = document.createElement('div');
-      cell.classList.add('cell');
+      cell.className = 'cell';
       cell.innerText = emojis[currentChar];
 
+      // Set starting player position
       if (currentChar === 'O') {
-        playerPosition.X = j * cellWidth;
-        playerPosition.Y = i * cellHeight;
+        doorPosition.X = j * cellWidth;
+        doorPosition.Y = i * cellHeight;
 
-        cellPlayer.classList.add('cell');
+        playerPosition.X = doorPosition.X;
+        playerPosition.Y = doorPosition.Y;
+
+        cellPlayer.className = 'cell player';
         cellPlayer.innerText = emojis.PLAYER;
         cellPlayer.style.position = 'absolute';
         cellPlayer.style.left = `${playerPosition.X}px`;
@@ -62,12 +62,29 @@ const renderMap = (map) => {
         gameGrid.appendChild(cellPlayer);
       }
 
+      // Set gift position
+      if (currentChar === 'I') {
+        giftPosition.X = j * cellWidth;
+        giftPosition.Y = i * cellHeight;
+      }
+
+      // Set bombs positions
+      if (currentChar === 'X') {
+        bombPositions.push({
+          X: j * cellWidth,
+          Y: i * cellHeight
+        });
+      }
+
       gameGrid.appendChild(cell);
     }
   }
 };
 
 renderMap(maps.map1);
+
+console.log('giftPosition:', giftPosition);
+console.log('initialPlayerPosition:', playerPosition);
 
 window.addEventListener('keyup', (event) => {
   event.preventDefault();
@@ -81,56 +98,19 @@ window.addEventListener('keyup', (event) => {
     LEFT: ['A', 'ARROWLEFT']
   };
 
-  for (const key in moveKeys) {
-    const element = moveKeys[key];
+  const objectPositions = {
+    doorPosition,
+    playerPosition,
+    giftPosition,
+    bombsPositions: bombPositions
+  };
 
-    if (element.includes(userKey)) {
-      let newWidth = 0;
-      let newHeight = 0;
+  const gameDimensions = {
+    gridWidth,
+    gridHeight,
+    cellWidth,
+    cellHeight
+  };
 
-      switch (key) {
-        case 'UP':
-          newHeight = playerPosition.Y - cellHeight;
-
-          if (newHeight < 0) {
-            return;
-          }
-
-          playerPosition.Y -= cellHeight;
-          break;
-        case 'RIGHT':
-          newWidth = playerPosition.X + cellWidth;
-
-          if (newWidth > gridWidth - cellWidth) {
-            return;
-          }
-
-          playerPosition.X += cellWidth;
-          break;
-        case 'DOWN':
-          newHeight = playerPosition.Y + cellHeight;
-
-          if (newHeight > gridHeight - cellHeight) {
-            return;
-          }
-
-          playerPosition.Y += cellHeight;
-          break;
-        case 'LEFT':
-          newWidth = playerPosition.X - cellWidth;
-
-          if (newWidth < 0) {
-            return;
-          }
-
-          playerPosition.X -= cellWidth;
-          break;
-      }
-
-      cellPlayer.style.left = `${playerPosition.X}px`;
-      cellPlayer.style.top = `${playerPosition.Y}px`;
-
-      break;
-    }
-  }
+  movePlayer({ moveKeys, userKey, objectPositions, gameDimensions });
 });
