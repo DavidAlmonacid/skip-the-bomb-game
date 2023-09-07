@@ -6,11 +6,6 @@ const app = document.getElementById('app');
 const gameGrid = document.getElementById('game-grid');
 const cellPlayer = document.createElement('div');
 
-const gridWidth = gameGrid.clientWidth;
-const gridHeight = gameGrid.clientHeight;
-const cellWidth = gridWidth / 10;
-const cellHeight = gridHeight / 10;
-
 app.addEventListener('click', () => {
   gameGrid.style.userSelect = 'none';
 });
@@ -19,24 +14,22 @@ gameGrid.addEventListener('selectstart', (event) => {
   event.preventDefault();
 });
 
-const doorPosition = {
-  X: 0,
-  Y: 0
+export const game = {
+  gridWidth: gameGrid.clientWidth,
+  gridHeight: gameGrid.clientHeight,
+  cellWidth: gameGrid.clientWidth / 10,
+  cellHeight: gameGrid.clientHeight / 10,
+  currentLevel: 1,
+  doorPosition: { X: 0, Y: 0 },
+  playerPosition: { X: 0, Y: 0 },
+  giftPosition: { X: 0, Y: 0 },
+  bombPositions: []
 };
 
-const playerPosition = {
-  X: 0,
-  Y: 0
-};
+export const renderMap = (map) => {
+  gameGrid.innerHTML = '';
+  const bombPositions = [];
 
-const giftPosition = {
-  X: 0,
-  Y: 0
-};
-
-const bombPositions = [];
-
-const renderMap = (map) => {
   for (let i = 0; i < map.length; i++) {
     for (let j = 0; j < map[i].length; j++) {
       const currentChar = map[i][j];
@@ -47,33 +40,35 @@ const renderMap = (map) => {
 
       // Set starting player position
       if (currentChar === 'O') {
-        doorPosition.X = j * cellWidth;
-        doorPosition.Y = i * cellHeight;
+        game.doorPosition.X = j * game.cellWidth;
+        game.doorPosition.Y = i * game.cellHeight;
 
-        playerPosition.X = doorPosition.X;
-        playerPosition.Y = doorPosition.Y;
+        game.playerPosition.X = game.doorPosition.X;
+        game.playerPosition.Y = game.doorPosition.Y;
 
         cellPlayer.className = 'cell player';
         cellPlayer.innerText = emojis.PLAYER;
         cellPlayer.style.position = 'absolute';
-        cellPlayer.style.left = `${playerPosition.X}px`;
-        cellPlayer.style.top = `${playerPosition.Y}px`;
+        cellPlayer.style.left = `${game.playerPosition.X}px`;
+        cellPlayer.style.top = `${game.playerPosition.Y}px`;
 
         gameGrid.appendChild(cellPlayer);
       }
 
       // Set gift position
       if (currentChar === 'I') {
-        giftPosition.X = j * cellWidth;
-        giftPosition.Y = i * cellHeight;
+        game.giftPosition.X = j * game.cellWidth;
+        game.giftPosition.Y = i * game.cellHeight;
       }
 
       // Set bombs positions
       if (currentChar === 'X') {
         bombPositions.push({
-          X: j * cellWidth,
-          Y: i * cellHeight
+          X: j * game.cellWidth,
+          Y: i * game.cellHeight
         });
+
+        game.bombPositions = bombPositions;
       }
 
       gameGrid.appendChild(cell);
@@ -81,10 +76,7 @@ const renderMap = (map) => {
   }
 };
 
-renderMap(maps.map1);
-
-console.log('giftPosition:', giftPosition);
-console.log('initialPlayerPosition:', playerPosition);
+renderMap(maps[game.currentLevel]);
 
 window.addEventListener('keyup', (event) => {
   event.preventDefault();
@@ -98,19 +90,5 @@ window.addEventListener('keyup', (event) => {
     LEFT: ['A', 'ARROWLEFT']
   };
 
-  const objectPositions = {
-    doorPosition,
-    playerPosition,
-    giftPosition,
-    bombsPositions: bombPositions
-  };
-
-  const gameDimensions = {
-    gridWidth,
-    gridHeight,
-    cellWidth,
-    cellHeight
-  };
-
-  movePlayer({ moveKeys, userKey, objectPositions, gameDimensions });
+  movePlayer({ moveKeys, userKey });
 });

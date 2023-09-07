@@ -1,3 +1,4 @@
+import { game } from './main.js';
 import { loseLife, winLevel } from './states.js';
 
 export const emojis = {
@@ -12,7 +13,7 @@ export const emojis = {
 };
 
 export const maps = {
-  map1: [
+  1: [
     ['I', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X'],
     ['-', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X'],
     ['-', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X'],
@@ -24,7 +25,7 @@ export const maps = {
     ['-', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X'],
     ['O', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X']
   ],
-  map2: [
+  2: [
     ['O', '-', '-', 'X', 'X', 'X', 'X', 'X', 'X', 'X'],
     ['X', '-', '-', 'X', 'X', 'X', 'X', 'X', 'X', 'X'],
     ['X', 'X', '-', '-', '-', '-', 'X', 'X', 'X', 'X'],
@@ -35,19 +36,22 @@ export const maps = {
     ['X', 'X', '-', '-', 'X', 'X', 'X', '-', 'X', 'X'],
     ['X', 'X', 'X', 'X', '-', '-', '-', 'I', 'X', 'X'],
     ['X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X']
+  ],
+  3: [
+    ['-', '-', 'X', '-', '-', '-', '-', '-', '-', '-'],
+    ['-', '-', '-', 'X', '-', '-', '-', '-', '-', '-'],
+    ['-', '-', '-', '-', '-', '-', '-', '-', '-', '-'],
+    ['-', '-', '-', '-', '-', '-', '-', '-', '-', '-'],
+    ['-', '-', '-', '-', '-', '-', '-', '-', '-', '-'],
+    ['-', '-', '-', '-', '-', '-', '-', '-', '-', '-'],
+    ['-', '-', '-', '-', '-', 'I', '-', '-', '-', '-'],
+    ['-', '-', '-', '-', '-', '-', '-', '-', '-', '-'],
+    ['-', '-', '-', '-', '-', '-', '-', 'O', '-', '-'],
+    ['-', '-', '-', '-', '-', '-', '-', '-', '-', '-']
   ]
 };
 
-export const movePlayer = ({
-  moveKeys,
-  userKey,
-  objectPositions,
-  gameDimensions
-}) => {
-  const { doorPosition, playerPosition, giftPosition, bombsPositions } =
-    objectPositions;
-  const { gridWidth, gridHeight, cellWidth, cellHeight } = gameDimensions;
-
+export const movePlayer = ({ moveKeys, userKey }) => {
   for (const key in moveKeys) {
     const element = moveKeys[key];
 
@@ -57,67 +61,68 @@ export const movePlayer = ({
 
       switch (key) {
         case 'UP':
-          newHeight = playerPosition.Y - cellHeight;
+          newHeight = game.playerPosition.Y - game.cellHeight;
 
           if (newHeight < 0) {
             return;
           }
 
-          playerPosition.Y = newHeight;
+          game.playerPosition.Y = newHeight;
           break;
 
         case 'RIGHT':
-          newWidth = playerPosition.X + cellWidth;
+          newWidth = game.playerPosition.X + game.cellWidth;
 
-          if (newWidth > gridWidth - cellWidth) {
+          if (newWidth > game.gridWidth - game.cellWidth) {
             return;
           }
 
-          playerPosition.X = newWidth;
+          game.playerPosition.X = newWidth;
           break;
 
         case 'DOWN':
-          newHeight = playerPosition.Y + cellHeight;
+          newHeight = game.playerPosition.Y + game.cellHeight;
 
-          if (newHeight > gridHeight - cellHeight) {
+          if (newHeight > game.gridHeight - game.cellHeight) {
             return;
           }
 
-          playerPosition.Y = newHeight;
+          game.playerPosition.Y = newHeight;
           break;
 
         case 'LEFT':
-          newWidth = playerPosition.X - cellWidth;
+          newWidth = game.playerPosition.X - game.cellWidth;
 
           if (newWidth < 0) {
             return;
           }
 
-          playerPosition.X = newWidth;
+          game.playerPosition.X = newWidth;
           break;
       }
 
       const cellPlayer = document.querySelector('.player');
-      cellPlayer.style.left = `${playerPosition.X}px`;
-      cellPlayer.style.top = `${playerPosition.Y}px`;
+      cellPlayer.style.left = `${game.playerPosition.X}px`;
+      cellPlayer.style.top = `${game.playerPosition.Y}px`;
 
       // Check if player has found the gift
       if (
-        playerPosition.X === giftPosition.X &&
-        playerPosition.Y === giftPosition.Y
+        game.playerPosition.X === game.giftPosition.X &&
+        game.playerPosition.Y === game.giftPosition.Y
       ) {
         winLevel();
       }
 
       // Check if player has collided with a bomb
-      const hasCollided = bombsPositions.some((bombPosition) => {
+      const hasCollided = game.bombPositions.some((bombPosition) => {
         return (
-          playerPosition.X === bombPosition.X &&
-          playerPosition.Y === bombPosition.Y
+          game.playerPosition.X === bombPosition.X &&
+          game.playerPosition.Y === bombPosition.Y
         );
       });
 
       if (hasCollided) {
+        const { playerPosition, doorPosition } = game;
         loseLife({ playerPosition, doorPosition });
       }
 
