@@ -1,14 +1,24 @@
+import confetti from 'canvas-confetti';
 import { game, renderMap } from './main.js';
 import { maps } from './utils.js';
 
-// export const winGame = () => {};
+export const winGame = () => {
+  const screenWin = document.getElementById('reset-game');
+  screenWin.style.display = 'block';
+
+  confetti({
+    particleCount: 600,
+    spread: 100
+  });
+
+  window.onkeyup = null;
+};
 
 export const winLevel = () => {
   game.currentLevel++;
-  console.log(`Level: ${game.currentLevel}`);
 
   if (!maps[game.currentLevel]) {
-    console.log('You win the game!');
+    winGame();
     return;
   }
 
@@ -18,8 +28,6 @@ export const winLevel = () => {
 // export const loseGame = () => {};
 
 export const loseLife = ({ playerPosition, doorPosition }) => {
-  console.log('You lose a life!');
-
   const cellPlayer = document.querySelector('.player');
 
   setTimeout(() => {
