@@ -78,7 +78,7 @@ export const renderMap = (map) => {
 
 renderMap(maps[game.currentLevel]);
 
-window.addEventListener('keyup', (event) => {
+window.onkeyup = (event) => {
   event.preventDefault();
 
   const userKey = event.key.toUpperCase();
@@ -91,4 +91,4 @@ window.addEventListener('keyup', (event) => {
   };
 
   movePlayer({ moveKeys, userKey });
-});
+};
