@@ -9,7 +9,9 @@ export const emojis = {
   PLAYER: '💀',
   BOMB_COLLISION: '🔥',
   GAME_OVER: '👎',
-  WIN: '🏆'
+  WIN: '🏆',
+  HEART: '❤️',
+  SAD: '💔'
 };
 
 export const maps = {

@@ -1,9 +1,11 @@
+import { loseGame } from './states.js';
 import { emojis, maps, movePlayer } from './utils.js';
 
 import './style.css';
 
 const app = document.getElementById('app');
 const gameGrid = document.getElementById('game-grid');
+const gameLives = document.getElementById('game-lives');
 const cellPlayer = document.createElement('div');
 
 app.addEventListener('click', () => {
@@ -20,10 +22,18 @@ export const game = {
   cellWidth: gameGrid.clientWidth / 10,
   cellHeight: gameGrid.clientHeight / 10,
   currentLevel: 1,
+  lives: 3,
   doorPosition: { X: 0, Y: 0 },
   playerPosition: { X: 0, Y: 0 },
   giftPosition: { X: 0, Y: 0 },
   bombPositions: []
+};
+
+export const moveKeys = {
+  UP: ['W', 'ARROWUP'],
+  RIGHT: ['D', 'ARROWRIGHT'],
+  DOWN: ['S', 'ARROWDOWN'],
+  LEFT: ['A', 'ARROWLEFT']
 };
 
 export const renderMap = (map) => {
@@ -76,19 +86,28 @@ export const renderMap = (map) => {
   }
 };
 
+export const renderLives = (lives) => {
+  if (lives === 0) {
+    gameLives.textContent = `0 ${emojis.SAD}`;
+    gameLives.style.opacity = 0.4;
+
+    loseGame();
+    return;
+  }
+
+  gameLives.textContent = '';
+
+  for (let i = 0; i < lives; i++) {
+    gameLives.textContent += emojis.HEART;
+  }
+};
+
 renderMap(maps[game.currentLevel]);
+renderLives(game.lives);
 
 window.onkeyup = (event) => {
   event.preventDefault();
-
   const userKey = event.key.toUpperCase();
-
-  const moveKeys = {
-    UP: ['W', 'ARROWUP'],
-    RIGHT: ['D', 'ARROWRIGHT'],
-    DOWN: ['S', 'ARROWDOWN'],
-    LEFT: ['A', 'ARROWLEFT']
-  };
 
   movePlayer({ moveKeys, userKey });
 };

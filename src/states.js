@@ -1,17 +1,25 @@
 import confetti from 'canvas-confetti';
-import { game, renderMap } from './main.js';
-import { maps } from './utils.js';
+import { game, moveKeys, renderLives, renderMap } from './main.js';
+import { maps, movePlayer } from './utils.js';
+
+const resetGame = () => {
+  const resetScreen = document.getElementById('reset-game');
+  resetScreen.style.display = 'block';
+
+  window.onkeyup = null;
+};
 
 export const winGame = () => {
-  const screenWin = document.getElementById('reset-game');
-  screenWin.style.display = 'block';
+  resetGame();
 
   confetti({
     particleCount: 600,
     spread: 100
   });
+};
 
-  window.onkeyup = null;
+export const loseGame = () => {
+  resetGame();
 };
 
 export const winLevel = () => {
@@ -25,10 +33,11 @@ export const winLevel = () => {
   renderMap(maps[game.currentLevel]);
 };
 
-// export const loseGame = () => {};
-
 export const loseLife = ({ playerPosition, doorPosition }) => {
   const cellPlayer = document.querySelector('.player');
+
+  game.lives--;
+  window.onkeyup = null;
 
   setTimeout(() => {
     // Reset player position
@@ -38,5 +47,17 @@ export const loseLife = ({ playerPosition, doorPosition }) => {
     // Reset player cell position
     cellPlayer.style.left = `${playerPosition.X}px`;
     cellPlayer.style.top = `${playerPosition.Y}px`;
-  }, 250);
+
+    // Reset move event
+    if (game.lives !== 0) {
+      window.onkeyup = (event) => {
+        event.preventDefault();
+        const userKey = event.key.toUpperCase();
+
+        movePlayer({ moveKeys, userKey });
+      };
+    }
+  }, 400);
+
+  renderLives(game.lives);
 };
