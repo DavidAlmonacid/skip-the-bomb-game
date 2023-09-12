@@ -1,16 +1,24 @@
 import confetti from 'canvas-confetti';
-import { game, moveKeys, renderLives, renderMap } from './main.js';
+import {
+  game,
+  moveKeys,
+  renderLives,
+  renderMap,
+  stopTime,
+  timeInterval
+} from './main.js';
 import { maps, movePlayer } from './utils.js';
 
-const resetGame = () => {
+const stopGame = () => {
   const resetScreen = document.getElementById('reset-game');
   resetScreen.style.display = 'block';
 
   window.onkeyup = null;
+  stopTime(timeInterval);
 };
 
 export const winGame = () => {
-  resetGame();
+  stopGame();
 
   confetti({
     particleCount: 600,
@@ -19,7 +27,7 @@ export const winGame = () => {
 };
 
 export const loseGame = () => {
-  resetGame();
+  stopGame();
 };
 
 export const winLevel = () => {

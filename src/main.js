@@ -5,8 +5,9 @@ import './style.css';
 
 const app = document.getElementById('app');
 const gameGrid = document.getElementById('game-grid');
-const gameLives = document.getElementById('game-lives');
 const cellPlayer = document.createElement('div');
+const gameLives = document.getElementById('game-lives');
+const gameTime = document.getElementById('game-time');
 
 app.onclick = () => {
   gameGrid.style.userSelect = 'none';
@@ -23,6 +24,7 @@ export const game = {
   cellHeight: gameGrid.clientHeight / 10,
   currentLevel: 1,
   lives: 3,
+  time: '00:00',
   doorPosition: { X: 0, Y: 0 },
   playerPosition: { X: 0, Y: 0 },
   giftPosition: { X: 0, Y: 0 },
@@ -102,8 +104,25 @@ export const renderLives = (lives) => {
   }
 };
 
-renderMap(maps[game.currentLevel]);
-renderLives(game.lives);
+const initialTime = Date.now();
+
+export const timeInterval = setInterval(() => {
+  const currentTime = Date.now();
+  const elapsedTime = Math.floor((currentTime - initialTime) / 1000);
+  const minutes = `0${Math.floor(elapsedTime / 60)}`;
+  const seconds = `${elapsedTime < 10 ? '0' : ''}${elapsedTime % 60}`;
+  game.time = `${minutes}:${seconds}`;
+  gameTime.textContent = game.time;
+}, 1000);
+
+export const stopTime = (interval) => {
+  clearInterval(interval);
+};
+
+window.onload = () => {
+  renderMap(maps[game.currentLevel]);
+  renderLives(game.lives);
+};
 
 window.onkeyup = (event) => {
   event.preventDefault();
