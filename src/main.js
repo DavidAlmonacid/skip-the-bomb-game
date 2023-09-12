@@ -8,13 +8,13 @@ const gameGrid = document.getElementById('game-grid');
 const gameLives = document.getElementById('game-lives');
 const cellPlayer = document.createElement('div');
 
-app.addEventListener('click', () => {
+app.onclick = () => {
   gameGrid.style.userSelect = 'none';
-});
+};
 
-gameGrid.addEventListener('selectstart', (event) => {
+gameGrid.onselectstart = (event) => {
   event.preventDefault();
-});
+};
 
 export const game = {
   gridWidth: gameGrid.clientWidth,
@@ -107,7 +107,11 @@ renderLives(game.lives);
 
 window.onkeyup = (event) => {
   event.preventDefault();
-  const userKey = event.key.toUpperCase();
 
+  if (event.metaKey || event.ctrlKey) {
+    return;
+  }
+
+  const userKey = event.key.toUpperCase();
   movePlayer({ moveKeys, userKey });
 };

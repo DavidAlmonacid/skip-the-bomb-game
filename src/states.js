@@ -52,8 +52,12 @@ export const loseLife = ({ playerPosition, doorPosition }) => {
     if (game.lives !== 0) {
       window.onkeyup = (event) => {
         event.preventDefault();
-        const userKey = event.key.toUpperCase();
 
+        if (event.metaKey || event.ctrlKey) {
+          return;
+        }
+
+        const userKey = event.key.toUpperCase();
         movePlayer({ moveKeys, userKey });
       };
     }
