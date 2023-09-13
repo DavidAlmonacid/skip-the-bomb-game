@@ -4,17 +4,28 @@ import {
   moveKeys,
   renderLives,
   renderMap,
+  setScore,
   stopTime,
   timeInterval
 } from './main.js';
 import { maps, movePlayer } from './utils.js';
 
 const stopGame = () => {
-  const resetScreen = document.getElementById('reset-game');
-  resetScreen.style.display = 'block';
-
   window.onkeyup = null;
   stopTime(timeInterval);
+  setScore(game.lives, game.elapsedTime);
+
+  const resetScreen = document.getElementById('reset-game');
+  resetScreen.style.display = 'block';
+  resetScreen.innerHTML = `<h1>Score: ${game.score}</h1>`;
+
+  const bestScore = window.localStorage.getItem('BestScore');
+  const bestScoreStorage = parseInt(bestScore);
+
+  if (game.score > bestScoreStorage) {
+    window.localStorage.setItem('BestScore', game.score);
+    resetScreen.innerHTML += '<h2>New Best Score! 🎉</h2>';
+  }
 };
 
 export const winGame = () => {

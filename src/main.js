@@ -24,7 +24,9 @@ export const game = {
   cellHeight: gameGrid.clientHeight / 10,
   currentLevel: 1,
   lives: 3,
-  time: '00:00',
+  elapsedTime: 0,
+  timeText: '00:00',
+  score: 0,
   doorPosition: { X: 0, Y: 0 },
   playerPosition: { X: 0, Y: 0 },
   giftPosition: { X: 0, Y: 0 },
@@ -97,11 +99,7 @@ export const renderLives = (lives) => {
     return;
   }
 
-  gameLives.textContent = '';
-
-  for (let i = 0; i < lives; i++) {
-    gameLives.textContent += emojis.HEART;
-  }
+  gameLives.textContent = emojis.HEART.repeat(lives);
 };
 
 const initialTime = Date.now();
@@ -111,17 +109,31 @@ export const timeInterval = setInterval(() => {
   const elapsedTime = Math.floor((currentTime - initialTime) / 1000);
   const minutes = `0${Math.floor(elapsedTime / 60)}`;
   const seconds = `${elapsedTime < 10 ? '0' : ''}${elapsedTime % 60}`;
-  game.time = `${minutes}:${seconds}`;
-  gameTime.textContent = game.time;
+
+  game.elapsedTime = elapsedTime;
+  game.timeText = `${minutes}:${seconds}`;
+
+  gameTime.textContent = game.timeText;
 }, 1000);
 
 export const stopTime = (interval) => {
   clearInterval(interval);
 };
 
+export const setScore = (lives, elapsedTime) => {
+  const newScore = lives * 1000 - elapsedTime * 10;
+  game.score = newScore > game.score ? newScore : 0;
+};
+
 window.onload = () => {
   renderMap(maps[game.currentLevel]);
   renderLives(game.lives);
+
+  const bestScore = window.localStorage.getItem('BestScore');
+
+  if (!bestScore) {
+    window.localStorage.setItem('BestScore', game.score);
+  }
 };
 
 window.onkeyup = (event) => {
