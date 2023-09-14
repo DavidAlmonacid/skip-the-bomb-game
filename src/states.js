@@ -25,6 +25,8 @@ const stopGame = () => {
   if (game.score > bestScoreStorage) {
     window.localStorage.setItem('BestScore', game.score);
     resetScreen.innerHTML += '<h2>New Best Score! 🎉</h2>';
+  } else {
+    resetScreen.innerHTML += `<h2>Best Score: ${bestScore}</h2>`;
   }
 };
 
