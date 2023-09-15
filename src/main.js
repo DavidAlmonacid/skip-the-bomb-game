@@ -108,7 +108,7 @@ export const timeInterval = setInterval(() => {
   const currentTime = Date.now();
   const elapsedTime = Math.floor((currentTime - initialTime) / 1000);
   const minutes = `0${Math.floor(elapsedTime / 60)}`;
-  const seconds = `${elapsedTime < 10 ? '0' : ''}${elapsedTime % 60}`;
+  const seconds = `${elapsedTime % 60}`.padStart(2, '0');
 
   game.elapsedTime = elapsedTime;
   game.timeText = `${minutes}:${seconds}`;

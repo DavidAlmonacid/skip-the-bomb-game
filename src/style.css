@@ -39,7 +39,7 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 52px;
+  gap: 24px;
   height: 100vh;
 }
 
@@ -67,6 +67,12 @@ body {
   height: 100%;
   max-height: var(--game-items-size);
   overflow: hidden;
+}
+
+.game-records {
+  display: flex;
+  justify-content: space-between;
+  width: 640px;
 }
 
 #reset-game {
