@@ -16,8 +16,8 @@ const stopGame = () => {
   setScore(game.lives, game.elapsedTime);
 
   const resetScreen = document.getElementById('reset-game');
-  resetScreen.style.display = 'block';
-  resetScreen.innerHTML = `<h1>Score: ${game.score}</h1>`;
+  resetScreen.style.display = 'grid';
+  resetScreen.innerHTML = `<h1>Your score: ${game.score}</h1>`;
 
   const bestScore = window.localStorage.getItem('BestScore');
   const bestScoreStorage = parseInt(bestScore);
@@ -28,6 +28,15 @@ const stopGame = () => {
   } else {
     resetScreen.innerHTML += `<h2>Best Score: ${bestScore}</h2>`;
   }
+
+  resetScreen.innerHTML +=
+    '<button type="reset" id="reset-button" autofocus>Play again</button>';
+
+  const resetButton = document.getElementById('reset-button');
+
+  resetButton.onclick = () => {
+    window.location.reload();
+  };
 };
 
 export const winGame = () => {
